@@ -19,7 +19,7 @@ namespace EssayWriter_WASM.Pages
 
         [Required]
         [Range(0.00, 1.00)]
-        public double pLevel { get; set; }
+        public double frequencyPenalty { get; set; }
 
         public string paragraphType { get; set; }
     }

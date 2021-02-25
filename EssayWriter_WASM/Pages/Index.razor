@@ -43,7 +43,111 @@
         margin-top: 22.5rem;
     }
 
-    @@media only screen and (max-width: 1280px){
+    .rfcButton {
+        display: block;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 2.25rem;
+        line-height: 2.625rem;
+        align-items: center;
+        text-align: center;
+        background: #F0F0F0;
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+        border-radius: 0.25rem;
+        height: 3.25rem;
+        border-width: 0px;
+        color: #606060;
+        position: absolute;
+        margin-left: 15rem;
+    }
+
+        .rfcButton:hover {
+            background-color: #d4d4d4
+        }
+
+    .rfcDropdown {
+        background: #F0F0F0;
+        height: 3.25rem;
+        border-radius: 0.25rem;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 2.25rem;
+        border-width: 0px;
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+        color: #606060;
+        position: absolute;
+    }
+
+    .rfcSlider {
+        -webkit-appearance: none;
+        width: 35%;
+        height: 1.1875rem;
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+        border-radius: 0.375rem;
+        background: #F0F0F0;
+        outline: none;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+        .rfcSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1.5625rem;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+            height: 1.5625rem;
+            border-radius: 1.1875rem;
+            background: #EAEAEA;
+            cursor: pointer;
+        }
+
+    .complexityArea {
+        margin-top: 42.5rem;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1.5rem;
+        color: #606060;
+    }
+
+    .frequencyArea {
+        margin-top: 5rem;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1.5rem;
+        color: #606060;
+    }
+
+    .adProfile {
+        resize: none;
+        height: 14rem;
+        width: 25%;
+        background: #F0F0F0;
+        box-shadow: 0.1875rem 0.1875rem 0.375rem rgba(0, 0, 0, 0.15);
+        border-radius: 0.375rem;
+        border-width: 0;
+        position: absolute;
+        right: 6rem;
+        margin-top: -10rem;
+    }
+
+    .outputWindow {
+        resize: none;
+        height: 35rem;
+        width: 55%;
+        background: #F0F0F0;
+        box-shadow: 0.1875rem 0.1875rem 0.375rem rgba(0, 0, 0, 0.15);
+        border-radius: 0.375rem;
+        border-width: 0;
+        position: absolute;
+        margin-top: -47rem;
+        text-wrap: normal;
+        color: #606060;
+    }
+
+    @@media only screen and (max-width: 1280px) {
         .topicArea {
             margin: 5rem auto;
             left: 2.5%;
@@ -55,18 +159,117 @@
             left: 2.5%;
             width: 95%;
         }
-    }
 
+        .rfcButton {
+            margin: 40rem auto;
+            left: 2.5%;
+            width: 95%;
+        }
+
+        .rfcDropdown {
+            margin: 0rem auto;
+            left: 2.5%;
+            width: 95%;
+        }
+
+        .rfcSlider {
+            margin: 0rem auto;
+            left: 2.5%;
+            width: 100%;
+        }
+
+        .complexityArea {
+            margin-top: 47rem;
+            margin-bottom: 0px;
+            left: 2.5%;
+            width: 95%;
+        }
+
+        .frequencyArea {
+            margin: 5rem auto;
+            left: 2.5%;
+            width: 95%;
+        }
+
+        .adProfile {
+            margin: 2.5rem auto;
+            left: 2.5%;
+            width: 35%;
+            align-content: center;
+        }
+
+        .outputWindow {
+            margin: 2.5rem auto;
+            left: 2.5%;
+            width: 95%;
+        }
+    }
 </style>
 
 <textarea @bind="writer.Thesis" maxlength="400" class="topicArea"> Topic Here</textarea>
 <textarea @bind="writer.Structures" maxlength="200" class="structureArea"> Structures Here (Structures Don't Always Work)</textarea>
+<button @onclick="GenerateEssay" class="rfcButton">Generate</button>
 
+<select @bind="writer.paragraphType" class="rfcDropdown" name="pType">
+    <option selected value="Intro">Intro</option>
+    <option value="Body">Body</option>
+    <option value="Conclusion">Conclusion</option>
+</select>
 
-@writer.Thesis
+<div class="complexityArea">
+    Complexity : 
+    <input type="range" min="0" max="100" @bind="writer.temperature" class="rfcSlider"/>
+</div>
+
+<div class="frequencyArea">
+    Frequency : 
+    <input type="range" min="0" max="100" @bind="writer.frequencyPenalty" class="rfcSlider" />
+</div>
+
+<div class="adProfile">
+
+</div>
+
+<div class="outputWindow">
+    @output
+</div>
 
 @code {
     private Writer writer = new Writer();
 
+    private string output;
 
+    private string requestInput;
+
+    private async void GenerateEssay()
+    {
+        switch (writer.paragraphType)
+        {
+            case "Intro":
+                requestInput = $"Generate an introduction paragraph about {writer.Thesis} that includes {writer.Structures}";
+                break;
+            case "Body":
+                requestInput = $"Generate a body paragraph about {writer.Thesis} that includes {writer.Structures}";
+                break;
+            case "Conclusion":
+                requestInput = $"Generate a Conclusion paragraph about {writer.Thesis} that includes {writer.Structures}";
+                break;
+            default:
+                requestInput = $"Generate an introduction paragraph about {writer.Thesis} that includes {writer.Structures}";
+                break;
+        }
+
+        var api = new OpenAI_API.OpenAIAPI(new OpenAI_API.APIAuthentication("sk-yAQohD8cJInZMAuDf9g8mpI1fPG3SQWvKkqlc58C"), OpenAI_API.Engine.DavinciInstruct);
+
+        output = "Generating...";
+
+        var result = await api.Completions.CreateAndFormatCompletion(new OpenAI_API.CompletionRequest(requestInput, 1900, writer.temperature / 100, 1.0, 1, frequencyPenalty: writer.frequencyPenalty / 100));
+
+        result = System.Text.RegularExpressions.Regex.Replace(result, @"\n", "\r\n");
+        result = System.Text.RegularExpressions.Regex.Replace(result, @"\r", "");
+
+        Console.WriteLine(result);
+
+        output = result;
+    }
 }
