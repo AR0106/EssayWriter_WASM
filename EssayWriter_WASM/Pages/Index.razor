@@ -231,7 +231,9 @@
 </div>
 
 <div class="outputWindow">
-    @output
+    <span>
+        @output
+    </span>
 </div>
 
 @code {
@@ -239,10 +241,14 @@
 
     private string output;
 
+    private string _output;
+
     private string requestInput;
 
-    private async void GenerateEssay()
+    private async Task<string> GenerateEssay()
     {
+        output = "Generating...";
+
         switch (writer.paragraphType)
         {
             case "Intro":
@@ -261,15 +267,15 @@
 
         var api = new OpenAI_API.OpenAIAPI(new OpenAI_API.APIAuthentication("sk-yAQohD8cJInZMAuDf9g8mpI1fPG3SQWvKkqlc58C"), OpenAI_API.Engine.DavinciInstruct);
 
-        output = "Generating...";
-
         var result = await api.Completions.CreateAndFormatCompletion(new OpenAI_API.CompletionRequest(requestInput, 1900, writer.temperature / 100, 1.0, 1, frequencyPenalty: writer.frequencyPenalty / 100));
+        
+        StateHasChanged();
 
-        result = System.Text.RegularExpressions.Regex.Replace(result, @"\n", "\r\n");
-        result = System.Text.RegularExpressions.Regex.Replace(result, @"\r", "");
-
-        Console.WriteLine(result);
+        await Task.Delay(1000);
 
         output = result;
+
+        return result;
     }
+
 }
