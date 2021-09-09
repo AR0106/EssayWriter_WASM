@@ -265,7 +265,7 @@
                 break;
         }
 
-        var api = new OpenAI_API.OpenAIAPI(new OpenAI_API.APIAuthentication("sk-yAQohD8cJInZMAuDf9g8mpI1fPG3SQWvKkqlc58C"), OpenAI_API.Engine.DavinciInstruct);
+        var api = new OpenAI_API.OpenAIAPI(new OpenAI_API.APIAuthentication("API_KEY"), OpenAI_API.Engine.DavinciInstruct);
 
         var result = await api.Completions.CreateAndFormatCompletion(new OpenAI_API.CompletionRequest(requestInput, 1900, writer.temperature / 100, 1.0, 1, frequencyPenalty: writer.frequencyPenalty / 100));
         
